@@ -27,5 +27,15 @@ namespace CovRecover.API.Controllers
         {
             return await _context.Posts.FindAsync(id);
         }
+
+        [HttpPost]
+        public async Task<IActionResult> CreatePost(Post post)
+        {
+            await _context.Posts.AddAsync(post);
+
+            await _context.SaveChangesAsync();
+
+            return Ok(post);
+        }
     }
 }
