@@ -29,7 +29,7 @@ namespace CovRevocer.API
             });
             services.AddDbContext<DataContext>(options =>
             {
-                options.UseSqlServer(_config.GetConnectionString("CovRecoverDbConnection"))
+                options.UseSqlServer(_config.GetConnectionString("CovRecoverDbConnection"));
             });
         }
 
