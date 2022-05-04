@@ -16,13 +16,7 @@ jobs:
         run: dotnet restore
       - name: Build
         run: dotnet build --no-restore
-      - name: Publish
-        run: dotnet publish ./CovRevocer.API/CovRecover.API.csproj -c Release -o ${{ env.DOTNET_ROOT }}/api
-      - name: upload artifact
-        uses: actions/upload-artifact@v2.2.4
-        with: 
-         name: api-artifact
-         path: ${{ env.DOTNET_ROOT }}/api
+
 
   deploy-dev:
     runs-on: ubuntu-latest
