@@ -1,3 +1,8 @@
+using Application.Core;
+using Application.Posts;
+using AutoMapper;
+using CovRecover.API.Extensions;
+using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -23,14 +28,7 @@ namespace CovRevocer.API
         {
 
             services.AddControllers();
-            services.AddSwaggerGen(c =>
-            {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "CovRevocer.API", Version = "v1" });
-            });
-            services.AddDbContext<DataContext>(options =>
-            {
-                options.UseSqlServer(_config.GetConnectionString("CovRecoverDbConnection"));
-            });
+            services.AddAppServicesToCollection(_config);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -48,6 +46,8 @@ namespace CovRevocer.API
             app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "CovRevocer.API v1"));
 
             app.UseRouting();
+
+            app.UseCors("AppCorsPolicy");
 
             app.UseAuthorization();
 
