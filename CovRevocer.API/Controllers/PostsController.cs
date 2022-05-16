@@ -47,5 +47,11 @@ namespace CovRecover.API.Controllers
             return Ok(await _mediator.Send(new Delete.Command { Id = id }));
         }
 
+        [HttpPut("publish/{id}")]
+        public async Task<IActionResult> Publish(Guid id)
+        {
+            return Ok(await _mediator.Send(new Publish.Command { Id = id}));
+        }
+
     }
 }

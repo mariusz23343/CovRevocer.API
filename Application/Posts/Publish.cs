@@ -1,4 +1,4 @@
-﻿    using MediatR;
+﻿using MediatR;
 using Persistance;
 using System;
 using System.Collections.Generic;
@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Application.Posts
 {
-    public class Delete 
+    public class Publish
     {
         public class Command : IRequest
         {
@@ -28,7 +28,8 @@ namespace Application.Posts
             {
                 var post = await _context.Posts.FindAsync(request.Id);
 
-                _context.Posts.Remove(post);
+                post.IsPublished = true;
+                post.PublishedAt = DateTime.Now;
 
                 await _context.SaveChangesAsync();
 
