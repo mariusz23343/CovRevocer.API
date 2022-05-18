@@ -2,6 +2,7 @@ using Application.Core;
 using Application.Posts;
 using AutoMapper;
 using CovRecover.API.Extensions;
+using FluentValidation.AspNetCore;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -27,7 +28,10 @@ namespace CovRevocer.API
         public void ConfigureServices(IServiceCollection services)
         {
 
-            services.AddControllers();
+            services.AddControllers().AddFluentValidation(configuration =>
+            {
+                configuration.RegisterValidatorsFromAssemblyContaining<Create>();
+            });
             services.AddAppServicesToCollection(_config);
         }
 
