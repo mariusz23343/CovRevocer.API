@@ -27,6 +27,7 @@ namespace CovRecover.API.Controllers
         [HttpPost]
         public async Task<IActionResult> CreatePost(Post post)
         {
+            var count = 1 + 1;
             return HandleResult(await _mediator.Send(new Create.Command { Post = post }));
         }
 
