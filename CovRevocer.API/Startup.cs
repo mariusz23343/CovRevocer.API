@@ -2,6 +2,8 @@ using Application.Core;
 using Application.Posts;
 using AutoMapper;
 using CovRecover.API.Extensions;
+using CovRecover.API.Middleware;
+using FluentValidation.AspNetCore;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -27,16 +29,21 @@ namespace CovRevocer.API
         public void ConfigureServices(IServiceCollection services)
         {
 
-            services.AddControllers();
+            services.AddControllers().AddFluentValidation(configuration =>
+            {
+                configuration.RegisterValidatorsFromAssemblyContaining<Create>();
+            });
             services.AddAppServicesToCollection(_config);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            app.UseMiddleware<ExceptionMiddleware>();
+            
             if (env.IsDevelopment())
             {
-                app.UseDeveloperExceptionPage();
+                
                
             }
 

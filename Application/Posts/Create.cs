@@ -1,4 +1,6 @@
-﻿using Domain;
+﻿using Application.Core;
+using Domain;
+using FluentValidation;
 using MediatR;
 using Persistance;
 using System;
@@ -12,12 +14,20 @@ namespace Application.Posts
 {
     public class Create
     {
-        public class Command : IRequest 
+        public class Command : IRequest<Result<Unit>> 
         {
             public Post Post;
         }
 
-        public class Handler : IRequestHandler<Command>
+        public class CommandValidator : AbstractValidator<Command>
+        {
+            public CommandValidator()
+            {
+                RuleFor(x => x.Post).SetValidator(new PostValidator());
+            }
+        }
+
+        public class Handler : IRequestHandler<Command, Result<Unit>>
         {
             private readonly DataContext _context;
 
@@ -25,13 +35,15 @@ namespace Application.Posts
             {
                 _context = context;
             }
-            public async Task<Unit> Handle(Command request, CancellationToken cancellationToken)
+            public async Task<Result<Unit>> Handle(Command request, CancellationToken cancellationToken)
             {
                 _context.Posts.Add(request.Post);
 
-                await _context.SaveChangesAsync();
+                var result =await _context.SaveChangesAsync() > 0; //jesli cos sie zapisze to bedzie wieksze niz zero
 
-                return Unit.Value;
+                if (!result) return Result<Unit>.Failure("Nie udalo sie stworzyć posta");
+
+                return Result<Unit>.Success(Unit.Value);
             }
         }
     }

@@ -13,24 +13,22 @@ namespace CovRecover.API.Controllers
     {
 
         [HttpGet]
-        public async Task<ActionResult<List<Post>>> GetPosts()
+        public async Task<IActionResult> GetPosts()
         {
-            return await _mediator.Send(new List.Query());
+            return HandleResult(await _mediator.Send(new List.Query()));
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<Post>> GetPostById(Guid id)
+        public async Task<IActionResult> GetPostById(Guid id)
         {
-            return await _mediator.Send(new Details.Query { Id = id });
+            return HandleResult(await _mediator.Send(new Details.Query { Id = id }));
         }
 
         [HttpPost]
         public async Task<IActionResult> CreatePost(Post post)
         {
-            
-            await _mediator.Send(new Create.Command { Post = post });
-
-            return Ok(post);
+            var count = 1 + 1;
+            return HandleResult(await _mediator.Send(new Create.Command { Post = post }));
         }
 
         [HttpPut("{id}")]
@@ -38,13 +36,13 @@ namespace CovRecover.API.Controllers
         {
             post.Id = id;
 
-            return Ok(await _mediator.Send(new Edit.Command { Post = post }));
+            return HandleResult(await _mediator.Send(new Edit.Command { Post = post }));
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeletePost(Guid id)
         {
-            return Ok(await _mediator.Send(new Delete.Command { Id = id }));
+            return HandleResult(await _mediator.Send(new Delete.Command { Id = id }));
         }
 
         [HttpPut("publish/{id}")]
