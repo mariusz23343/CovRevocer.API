@@ -1,5 +1,6 @@
 ﻿using Application.Posts;
 using Domain;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Persistance;
@@ -17,7 +18,6 @@ namespace CovRecover.API.Controllers
         {
             return HandleResult(await _mediator.Send(new List.Query()));
         }
-
         [HttpGet("{id}")]
         public async Task<IActionResult> GetPostById(Guid id)
         {
@@ -27,7 +27,6 @@ namespace CovRecover.API.Controllers
         [HttpPost]
         public async Task<IActionResult> CreatePost(Post post)
         {
-            var count = 1 + 1;
             return HandleResult(await _mediator.Send(new Create.Command { Post = post }));
         }
 

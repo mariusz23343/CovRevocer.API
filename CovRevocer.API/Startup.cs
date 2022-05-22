@@ -5,8 +5,10 @@ using CovRecover.API.Extensions;
 using CovRecover.API.Middleware;
 using FluentValidation.AspNetCore;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -29,11 +31,16 @@ namespace CovRevocer.API
         public void ConfigureServices(IServiceCollection services)
         {
 
-            services.AddControllers().AddFluentValidation(configuration =>
+            services.AddControllers( options =>
+            {
+                var policy = new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build();
+                options.Filters.Add(new AuthorizeFilter(policy));
+            }).AddFluentValidation(configuration =>
             {
                 configuration.RegisterValidatorsFromAssemblyContaining<Create>();
             });
             services.AddAppServicesToCollection(_config);
+            services.AddIdentityServices(_config);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -55,6 +62,8 @@ namespace CovRevocer.API
             app.UseRouting();
 
             app.UseCors("AppCorsPolicy");
+
+            app.UseAuthentication();
 
             app.UseAuthorization();
 
