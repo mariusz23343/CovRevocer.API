@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 
 namespace CovRecover.API.Controllers
 {
+    [AllowAnonymous]
     public class PostsController : ApiControllerBase
     {
 
