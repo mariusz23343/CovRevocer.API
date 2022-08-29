@@ -1,4 +1,5 @@
 ﻿using Application.Core;
+using Application.Interfaces;
 using AutoMapper;
 using Domain;
 using FluentValidation;
@@ -33,17 +34,22 @@ namespace Application.Posts
         {
             private readonly DataContext _context;
             private readonly IMapper _mapper;
+            private readonly IUserAccessor _userAccessor;
 
-            public Handler(DataContext context, IMapper mapper)
+            public Handler(DataContext context, IMapper mapper, IUserAccessor userAccessor)
             {
                 _context = context;
                 _mapper = mapper;
+                _userAccessor = userAccessor;
             }
             public async Task<Result<Unit>> Handle(Command request, CancellationToken cancellationToken)
             {
-                var post = await _context.Posts.FirstOrDefaultAsync(x => x.Id == request.Post.Id);
+                var post = await _context.Posts.Include(post => post.User).FirstOrDefaultAsync(x => x.Id == request.Post.Id);
 
-                if(post == null) return null;
+                if(_userAccessor.GetUsername() != post.User.UserName)
+                    return Result<Unit>.Failure("Nie udało się zedytować posta");
+
+                if (post == null) return null;
 
                 _mapper.Map(request.Post, post);
 

@@ -29,7 +29,7 @@ namespace Application.Posts
             }
             public async Task<Result<Post>> Handle(Query request, CancellationToken cancellationToken)
             {
-                var post = await _context.Posts.FirstOrDefaultAsync(x => x.Id == request.Id);
+                var post = await _context.Posts.Include(x => x.User).FirstOrDefaultAsync(x => x.Id == request.Id);
 
                 return Result<Post>.Success(post);
             }

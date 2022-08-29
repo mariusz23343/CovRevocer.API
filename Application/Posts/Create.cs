@@ -1,4 +1,5 @@
 ﻿using Application.Core;
+using Application.Interfaces;
 using Domain;
 using FluentValidation;
 using MediatR;
@@ -30,16 +31,23 @@ namespace Application.Posts
         public class Handler : IRequestHandler<Command, Result<Unit>>
         {
             private readonly DataContext _context;
+            private readonly IUserAccessor _userAccessor;
 
-            public Handler(DataContext context)
+            public Handler(DataContext context, IUserAccessor userAccessor)
             {
                 _context = context;
+                _userAccessor = userAccessor;
             }
             public async Task<Result<Unit>> Handle(Command request, CancellationToken cancellationToken)
             {
+
+                var user = _context.Users.FirstOrDefault(x => x.UserName == _userAccessor.GetUsername());
+
+                request.Post.User = user;
+
                 _context.Posts.Add(request.Post);
 
-                var result =await _context.SaveChangesAsync() > 0; //jesli cos sie zapisze to bedzie wieksze niz zero
+                var result =await _context.SaveChangesAsync() > 0;
 
                 if (!result) return Result<Unit>.Failure("Nie udalo sie stworzyć posta");
 

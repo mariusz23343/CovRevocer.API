@@ -24,7 +24,14 @@ namespace CovRecover.API.Controllers
         {
             return HandleResult(await _mediator.Send(new Details.Query { Id = id }));
         }
-
+        /// <summary>
+        /// Metoda Dodaje nowy artykuł w bazie danych
+        /// </summary>
+        /// <remarks>Awesomeness!</remarks>
+        /// <response code="200">Artykuł dodany</response>
+        /// <response code="400">Błędy Walidacji artykułu / błędne dane</response>
+        /// <response code="500">Wewnętrzny błąd serwera</response>
+        /// <response code="401">Błąd autoryzacji serwera / typ konta pacjent zamiast rehabilitant</response>
         [HttpPost]
         public async Task<IActionResult> CreatePost(Post post)
         {

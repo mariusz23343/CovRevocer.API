@@ -11,7 +11,7 @@ namespace Domain
     {
         public AccountType AccountType { get; set; }
         public string DisplayName { get; set; }
-
+        public ICollection<Post> Posts { get; set; }
     }
 
     public enum AccountType
