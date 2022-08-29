@@ -1,12 +1,13 @@
-﻿using System;
+﻿using Domain;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Domain
+namespace Application.Posts
 {
-    public class Post
+    public class PostDto
     {
         public Guid Id { get; set; }
         public string Title { get; set; }
@@ -16,7 +17,6 @@ namespace Domain
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
         public DateTime PublishedAt { get; set; }
-        public AppUser User { get; set; }
-
+        public string Author { get; set; }
     }
 }

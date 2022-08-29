@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Microsoft.EntityFrameworkCore;
 using Persistance;
 using System;
 using System.Collections.Generic;
@@ -26,9 +27,10 @@ namespace Application.Posts
             }
             public async Task<Unit> Handle(Command request, CancellationToken cancellationToken)
             {
-                var post = await _context.Posts.FindAsync(request.Id);
+                var post = await _context.Posts.Include(post => post.User).FirstOrDefaultAsync(x => x.Id == request.Id);
 
                 post.IsPublished = true;
+
                 post.PublishedAt = DateTime.Now;
 
                 await _context.SaveChangesAsync();

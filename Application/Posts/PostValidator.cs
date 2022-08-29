@@ -12,10 +12,10 @@ namespace Application.Posts
     {
         public PostValidator()
         {
-            RuleFor(x => x.Title).NotEmpty();
-            RuleFor(x => x.Summary).NotEmpty();
+            RuleFor(x => x.Title).NotEmpty().MinimumLength(10).MaximumLength(50);
+            RuleFor(x => x.Summary).NotEmpty().MinimumLength(20);
             RuleFor(x => x.CreatedAt).NotEmpty();
-            RuleFor(x => x.Content).NotEmpty();
+            RuleFor(x => x.Content).NotEmpty().MinimumLength(300);
             RuleFor(x => x.IsPublished).NotEmpty();
         }
     }

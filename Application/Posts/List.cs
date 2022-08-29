@@ -1,4 +1,5 @@
 ﻿using Application.Core;
+using AutoMapper;
 using Domain;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -14,19 +15,27 @@ namespace Application.Posts
 {
     public class List
     {
-        public class Query : IRequest<Result<List<Post>>> { }
+        public class Query : IRequest<Result<List<PostDto>>> { }
 
-        public class Handler : IRequestHandler<Query, Result<List<Post>>>
+        public class Handler : IRequestHandler<Query, Result<List<PostDto>>>
         {
             private readonly DataContext _context;
+            private readonly IMapper _mapper;
 
-            public Handler(DataContext context)
+            public Handler(DataContext context, IMapper mapper)
             {
                 _context = context;
+                _mapper = mapper;
             }
-            public async Task<Result<List<Post>>> Handle(Query request, CancellationToken cancellationToken)
+            public async Task<Result<List<PostDto>>> Handle(Query request, CancellationToken cancellationToken)
             {
-                return Result<List<Post>>.Success(await _context.Posts.ToListAsync());
+                var posts = await _context.Posts
+                    .Include(x => x.User)
+                    .ToListAsync();
+
+                var postToReturn = _mapper.Map<List<PostDto>>(posts);
+
+                return Result<List<PostDto>>.Success(postToReturn);
             }
         }
     }
